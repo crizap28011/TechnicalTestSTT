@@ -4,11 +4,6 @@ import { listCharacters } from '../services/rick-and-morty'
 import ListCharacters from '../components/ListCharacters.vue';
 import Loader from '../components/Loader.vue';
 
-const state = reactive({
-    characters: [],
-    page: 1
-})
-
 const characters = ref([])
 const page = ref(1)
 const ready = ref(false)
@@ -19,24 +14,21 @@ onMounted(() => {
 
 const getListCharacters = () => {
     ready.value = false
-    listCharacters({ page: state.page })
+    listCharacters({ page: page.value })
     .then(res => {
-        state.characters = res.data.results
-        characters.value = res.data.results
+        characters.value = res.data.data.characters.results
         ready.value = true
     })
     .catch(err => console.error(err))
 }
 
 const nextPage = () => {
-    state.page++
     page.value++
     getListCharacters()
     toTop()
 }
 
 const prevPage = () => {
-    state.page--
     page.value--
     getListCharacters()
     toTop()

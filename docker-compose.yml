@@ -14,18 +14,18 @@ services:
       - /usr/src/node_modules
     command: npx nodemon -L index.js
 
-  # front:
-  #   build: "./technical-test-stt"
-  #   environment:
-  #     BACK_URL: "mongodb://backend:3000"
-  #   depends_on:
-  #     - backend
-  #   ports:
-  #     - "5173:5173"
-  #   volumes:
-  #     - ./technical-test-stt:/usr/src
-  #     - /usr/src/node_modules
-  #   command: npm run dev -- --host
+  front:
+    build: "./technical-test-stt"
+    environment:
+      BACK_URL: "mongodb://backend:3000"
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./technical-test-stt:/usr/src
+      - /usr/src/node_modules
+    command: npm run dev -- --host
 
   db:
     image: mongo
