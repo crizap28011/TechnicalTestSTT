@@ -12,29 +12,29 @@ const comment = ref("")
 const characterId = ref(route.params.id)
 
 onMounted(() => {
-    console.log({characterId: characterId.value});
+    // console.log({characterId: characterId.value});
     listComments()
 })
 
 const listComments = () => {
     listCommentsByCharacterId(characterId.value)
     .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         comments.value = res.data
     })
     .catch(err => console.error(err))
 }
 
 const saveComment = () => {
-    console.log(comment.value);
+    // console.log(comment.value);
     const params = {
         comment: comment.value,
         user: "Cristian Zapata",
     }
-    console.log(params);
+    // console.log(params);
     createComment(params, characterId.value)
     .then(res => {
-        console.log(res)
+        // console.log(res)
         comment.value = ""
         listComments()
     })
