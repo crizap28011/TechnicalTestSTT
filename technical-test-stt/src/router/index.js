@@ -5,8 +5,9 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: () => import('../pages/Home.vue')
+            redirect: to => {
+                return 'characters'
+            }
         },
         {
             path: '/characters',
@@ -17,6 +18,12 @@ const router = createRouter({
             path: '/characters/:id',
             name: 'character',
             component: () => import('../pages/CharacterDetail.vue')
+        },
+        {
+            path: "/:pathMatch(.*)*",
+            redirect: to => {
+                return 'characters'
+            }
         }
     ]
 })
