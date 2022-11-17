@@ -38,6 +38,24 @@ const queries = {
           }
         }
       }
+    }`,
+    searchCharacterByName: (page, name) => `{
+      characters(page: ${page}, filter: {name: "${name}"}){
+        results{
+          id
+          name
+          image
+          status
+          species
+          gender
+          location{
+            name
+          }
+          episode{
+            episode
+          }
+        }
+      }
     }`
 }
 
@@ -51,5 +69,11 @@ export const getCharacterApi = (id) => {
     return axios.post(BASE_URL, {
         query: queries.getCharacters(id)
     })
+}
 
+
+export const searchCharacterByName = (page, name) => {
+  return axios.post(BASE_URL, {
+      query: queries.searchCharacterByName(page, name)
+  })
 }

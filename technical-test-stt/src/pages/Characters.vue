@@ -1,11 +1,12 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { listCharacters } from '../services/rick-and-morty'
+import { listCharacters, searchCharacterByName } from '../services/rick-and-morty'
 import ListCharacters from '../components/ListCharacters.vue';
 import Loader from '../components/Loader.vue';
 
 const characters = ref([])
 const page = ref(1)
+const search = ref("")
 const ready = ref(false)
 
 onMounted(() => {
@@ -22,15 +23,33 @@ const getListCharacters = () => {
     .catch(err => console.error(err))
 }
 
+const searchCharacters = () => {
+    searchCharacterByName(page.value, search.value)
+    .then(res => {
+        characters.value = res.data.data.characters.results
+    })
+    .catch(err => console.error(err))
+}
+
 const nextPage = () => {
     page.value++
-    getListCharacters()
+    if(search.value === ""){
+        getListCharacters()
+    }
+    else{
+        searchCharacters()
+    }
     toTop()
 }
 
 const prevPage = () => {
     page.value--
-    getListCharacters()
+    if(search.value === ""){
+        getListCharacters()
+    }
+    else{
+        searchCharacters()
+    }
     toTop()
 }
 
@@ -42,6 +61,16 @@ const toTop = () => {
     })
 }
 
+const searchCharacter = () => {
+    page.value = 1
+    if(search.value === ""){
+        getListCharacters()
+    }
+    else{
+        searchCharacters()
+    }
+}
+
 
 
 </script>
@@ -49,7 +78,9 @@ const toTop = () => {
 <template>
     <Loader v-if="!ready"></Loader>
     <template v-else>
-        <h1>Lista personajes</h1>
+        <h1 style="margin-bottom: 10px">Lista personajes</h1>
+        <input v-model="search" @input="searchCharacter" class="search-input" type="text">
+        <br>
         <ListCharacters :characters="characters"></ListCharacters>
         <br>
         <div class="navegation-buttons">
@@ -79,6 +110,20 @@ const toTop = () => {
 
 .navegation-buttons button:active{
     box-shadow: 1px 1px 3px #ccc;
+}
+
+.search-input{
+    font-size: 2rem;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 10px;
+    color: #97ce4c;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-color: #97ce4c;
+}
+
+.search-input:active{
+    border-color: #97ce4c;
 }
 
 .page{
