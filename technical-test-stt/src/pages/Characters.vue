@@ -10,12 +10,13 @@ const search = ref("")
 const ready = ref(false)
 
 onMounted(() => {
+    ready.value = false
     getListCharacters()
+
 })
 
 const getListCharacters = () => {
-    ready.value = false
-    listCharacters({ page: page.value })
+    listCharacters({ page: page.value, name: search.value})
     .then(res => {
         characters.value = res.data.data.characters.results
         ready.value = true
@@ -23,33 +24,15 @@ const getListCharacters = () => {
     .catch(err => console.error(err))
 }
 
-const searchCharacters = () => {
-    searchCharacterByName(page.value, search.value)
-    .then(res => {
-        characters.value = res.data.data.characters.results
-    })
-    .catch(err => console.error(err))
-}
-
 const nextPage = () => {
     page.value++
-    if(search.value === ""){
-        getListCharacters()
-    }
-    else{
-        searchCharacters()
-    }
+    getListCharacters()
     toTop()
 }
 
 const prevPage = () => {
     page.value--
-    if(search.value === ""){
-        getListCharacters()
-    }
-    else{
-        searchCharacters()
-    }
+    getListCharacters()
     toTop()
 }
 
@@ -61,14 +44,17 @@ const toTop = () => {
     })
 }
 
+const sortAZ = () => {
+    characters.value.sort((a, b) => a.name.localeCompare(b.name))
+}
+
+const sortZA = () => {
+    characters.value.sort((a, b) => b.name.localeCompare(a.name))
+}
+
 const searchCharacter = () => {
     page.value = 1
-    if(search.value === ""){
-        getListCharacters()
-    }
-    else{
-        searchCharacters()
-    }
+    getListCharacters()
 }
 
 
@@ -78,13 +64,19 @@ const searchCharacter = () => {
 <template>
     <Loader v-if="!ready"></Loader>
     <template v-else>
-        <h1 style="margin-bottom: 10px">Lista personajes</h1>
-        <input v-model="search" @input="searchCharacter" class="search-input" type="text">
+        <h1 class="title">Rick And Morty Page</h1>
+        <div class="col">
+            <input v-model="search" @input="searchCharacter" placeholder="Busqueda por nombre..." class="search-input" type="text">
+            <div class="row g-1">
+                <button @click="sortAZ">Ordenar A-Z</button>
+                <button @click="sortZA">Ordenar Z-A</button>
+            </div>
+        </div>
         <br>
         <ListCharacters :characters="characters"></ListCharacters>
         <br>
         <div class="navegation-buttons">
-            <button v-show="page !== 1" @click="prevPage">Prev</button>
+            <button  v-show="page !== 1" @click="prevPage">Prev</button>
             <strong class="page">{{ page }}</strong>
             <button @click="nextPage">Next</button>
         </div>
@@ -92,6 +84,12 @@ const searchCharacter = () => {
 </template>
 
 <style>
+.title{
+    font-size: 4rem;
+    padding-bottom: 20px;
+    color: #97ce4c;
+    font-weight: 700;
+}
 .navegation-buttons{
     display: flex;
     flex-direction: row;
@@ -113,7 +111,7 @@ const searchCharacter = () => {
 }
 
 .search-input{
-    font-size: 2rem;
+    font-size: 1.5rem;
     background-color: rgba(0, 0, 0, 0);
     border-radius: 10px;
     color: #97ce4c;

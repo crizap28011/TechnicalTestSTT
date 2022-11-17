@@ -21,8 +21,8 @@ const queries = {
         }
       }
     }`,
-    listCharacters: (page) => `{
-      characters(page: ${page}){
+    listCharacters: (page, name) => `{
+      characters(page: ${page}, filter: {name: "${name}"}){
         results{
           id
           name
@@ -59,9 +59,9 @@ const queries = {
     }`
 }
 
-export const listCharacters = ({ page = 1 }) => {
+export const listCharacters = ({ page = 1, name="" }) => {
     return axios.post(BASE_URL, {
-        query: queries.listCharacters(page)
+        query: queries.listCharacters(page, name)
     })
 }
 
